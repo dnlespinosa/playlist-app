@@ -1,5 +1,5 @@
 from flask import Flask, redirect, render_template
-from flask_debugtoolbar import DebugToolbarExtension
+# from flask_debugtoolbar import DebugToolbarExtension
 
 from models import db, connect_db, Playlist, Song, PlaylistSong
 from forms import NewSongForPlaylistForm, SongForm, PlaylistForm
@@ -19,7 +19,7 @@ app.config['SECRET_KEY'] = "I'LL NEVER TELL!!"
 #
 # app.config['DEBUG_TB_INTERCEPT_REDIRECTS'] = False
 
-debug = DebugToolbarExtension(app)
+# debug = DebugToolbarExtension(app)
 
 
 @app.route("/")
@@ -43,15 +43,16 @@ def show_all_playlists():
 
 @app.route("/playlists/<int:playlist_id>")
 def show_playlist(playlist_id):
+    
     """Show detail on specific playlist."""
-
+    playlist = Playlist.query.get_or_404(playlist_id)
+    return render_template('playlist.html', playlist=playlist)
     # ADD THE NECESSARY CODE HERE FOR THIS ROUTE TO WORK
 
 
 @app.route("/playlists/add", methods=["GET", "POST"])
 def add_playlist():
     """Handle add-playlist form:
-
     - if form not filled out or invalid: show form
     - if valid: add playlist to SQLA and redirect to list-of-playlists
     """
@@ -60,6 +61,8 @@ def add_playlist():
     if form.validate_on_submit():
         name = form.name.data
         description = form.description.data
+        playlist = Playlist(name=name, description=description)
+        db.session.add(playlist)
         db.session.commit()
         return redirect('/playlists')
     else:
@@ -83,14 +86,14 @@ def show_all_songs():
 @app.route("/songs/<int:song_id>")
 def show_song(song_id):
     """return a specific song"""
-
+    song = Song.query.get_or_404(song_id)
+    return render_template('song.html', song=song)
     # ADD THE NECESSARY CODE HERE FOR THIS ROUTE TO WORK
 
 
 @app.route("/songs/add", methods=["GET", "POST"])
 def add_song():
     """Handle add-song form:
-
     - if form not filled out or invalid: show form
     - if valid: add playlist to SQLA and redirect to list-of-songs
     """
@@ -99,7 +102,7 @@ def add_song():
     if form.validate_on_submit():
         title = form.title.data
         artist=form.artist.data
-        song = Song(title, artist)
+        song = Song(title=title, artist=artist)
         db.session.add(song)
         db.session.commit()
         return redirect('/songs')
