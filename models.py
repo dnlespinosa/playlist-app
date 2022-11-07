@@ -23,6 +23,7 @@ class Song(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     title = db.Column(db.Text, nullable=False)
     artist = db.Column(db.Text, nullable=False)
+
     # ADD THE NECESSARY CODE HERE
 
 
@@ -31,9 +32,8 @@ class PlaylistSong(db.Model):
     __tablename__='playlist_songs'
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    playlist_id = db.Column(db.Integer, db.ForeignKey('playlist.id'))
-    song_id = db.Column(db.Integer, db.ForeignKey('songs.id'))
-    
+    playlist_id = db.Column(db.Integer, nullable=False)
+    song_id = db.Column(db.Integer)
     # ADD THE NECESSARY CODE HERE
 
 
